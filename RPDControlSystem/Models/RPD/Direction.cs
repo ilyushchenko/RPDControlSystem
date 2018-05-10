@@ -7,6 +7,7 @@ namespace RPDControlSystem.Models.RPD
     public class Direction
     {
         [Key]
+        [Required]
         [Display(Name = "Код направления подготовки")]
         public string Code { get; set; }
 
@@ -16,7 +17,6 @@ namespace RPDControlSystem.Models.RPD
 
         [Required]
         [Display(Name = "Квалификация выпускника")]
-        public int QualificationId { get; set; }
         public Qualification Qualification { get; set; }
 
         [NotMapped]
