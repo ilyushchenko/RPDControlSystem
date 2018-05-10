@@ -10,22 +10,23 @@ using RPDControlSystem.Storage;
 
 namespace RPDControlSystem.Controllers
 {
-    public class DirectionsController : Controller
+    public class ProfilesController : Controller
     {
         private readonly DatabaseContext _context;
 
-        public DirectionsController(DatabaseContext context)
+        public ProfilesController(DatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: Directions
+        // GET: Profiles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Direction.ToListAsync());
+            var databaseContext = _context.Profile.Include(p => p.Direction);
+            return View(await databaseContext.ToListAsync());
         }
 
-        // GET: Directions/Details/5
+        // GET: Profiles/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -33,39 +34,42 @@ namespace RPDControlSystem.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Direction
+            var profile = await _context.Profile
+                .Include(p => p.Direction)
                 .SingleOrDefaultAsync(m => m.Code == id);
-            if (direction == null)
+            if (profile == null)
             {
                 return NotFound();
             }
 
-            return View(direction);
+            return View(profile);
         }
 
-        // GET: Directions/Create
+        // GET: Profiles/Create
         public IActionResult Create()
         {
+            ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code");
             return View();
         }
 
-        // POST: Directions/Create
+        // POST: Profiles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Code,Name,Qualification")] Direction direction)
+        public async Task<IActionResult> Create([Bind("Code,Name,DirectionCode")] Profile profile)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(direction);
+                _context.Add(profile);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(direction);
+            ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code", profile.DirectionCode);
+            return View(profile);
         }
 
-        // GET: Directions/Edit/5
+        // GET: Profiles/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -73,22 +77,23 @@ namespace RPDControlSystem.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Direction.SingleOrDefaultAsync(m => m.Code == id);
-            if (direction == null)
+            var profile = await _context.Profile.SingleOrDefaultAsync(m => m.Code == id);
+            if (profile == null)
             {
                 return NotFound();
             }
-            return View(direction);
+            ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code", profile.DirectionCode);
+            return View(profile);
         }
 
-        // POST: Directions/Edit/5
+        // POST: Profiles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Code,Name,Qualification")] Direction direction)
+        public async Task<IActionResult> Edit(string id, [Bind("Code,Name,DirectionCode")] Profile profile)
         {
-            if (id != direction.Code)
+            if (id != profile.Code)
             {
                 return NotFound();
             }
@@ -97,12 +102,12 @@ namespace RPDControlSystem.Controllers
             {
                 try
                 {
-                    _context.Update(direction);
+                    _context.Update(profile);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DirectionExists(direction.Code))
+                    if (!ProfileExists(profile.Code))
                     {
                         return NotFound();
                     }
@@ -113,10 +118,11 @@ namespace RPDControlSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(direction);
+            ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code", profile.DirectionCode);
+            return View(profile);
         }
 
-        // GET: Directions/Delete/5
+        // GET: Profiles/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -124,46 +130,31 @@ namespace RPDControlSystem.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Direction
+            var profile = await _context.Profile
+                .Include(p => p.Direction)
                 .SingleOrDefaultAsync(m => m.Code == id);
-            if (direction == null)
+            if (profile == null)
             {
                 return NotFound();
             }
 
-            return View(direction);
+            return View(profile);
         }
 
-        // POST: Directions/Delete/5
+        // POST: Profiles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var direction = await _context.Direction.SingleOrDefaultAsync(m => m.Code == id);
-            _context.Direction.Remove(direction);
+            var profile = await _context.Profile.SingleOrDefaultAsync(m => m.Code == id);
+            _context.Profile.Remove(profile);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DirectionExists(string id)
+        private bool ProfileExists(string id)
         {
-            return _context.Direction.Any(e => e.Code == id);
-        }
-
-        // POST: Profiles/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProfile([Bind("Code,Name,DirectionCode")] Profile profile)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(profile);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new { id = profile.DirectionCode });
-            }
-            return RedirectToAction(nameof(Index));
+            return _context.Profile.Any(e => e.Code == id);
         }
     }
 }
