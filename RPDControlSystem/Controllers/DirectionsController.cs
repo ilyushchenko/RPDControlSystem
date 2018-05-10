@@ -73,7 +73,7 @@ namespace RPDControlSystem.Controllers
                 return NotFound();
             }
 
-            var direction = await _context.Direction.SingleOrDefaultAsync(m => m.Code == id);
+            var direction = await _context.Direction.Include(c => c.Competencies).SingleOrDefaultAsync(m => m.Code == id);
             if (direction == null)
             {
                 return NotFound();
@@ -163,6 +163,23 @@ namespace RPDControlSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Details), new { id = profile.DirectionCode });
             }
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Competences/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCompetence([Bind("Id,DirectionCode,Code,Description")] Competence competence)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(competence);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Edit), new { id = competence.DirectionCode });
+            }
+            ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code", competence.DirectionCode);
             return RedirectToAction(nameof(Index));
         }
     }
