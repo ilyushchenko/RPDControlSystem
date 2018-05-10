@@ -47,6 +47,9 @@ namespace RPDControlSystem
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    name: "DisciplineInfoes",
+                    template: "{controller=DisciplineInfoes}/{action=Index}/{id}/{code?}");
+                routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });

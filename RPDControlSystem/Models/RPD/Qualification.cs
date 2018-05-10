@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace RPDControlSystem.Models.RPD
 {
-    public class Qualification
+    public enum Qualification
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public string Name { get; set; }
+        Bachelor,
+        Masetr,
+        Specialist
     }
 }

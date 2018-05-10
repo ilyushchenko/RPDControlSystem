@@ -5,13 +5,14 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
+using RPDControlSystem.Models.RPD;
 using RPDControlSystem.Storage;
 using System;
 
 namespace RPDControlSystem.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20180508084648_Initial")]
+    [Migration("20180510205503_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,7 +52,12 @@ namespace RPDControlSystem.Migrations
                     b.Property<string>("Description")
                         .IsRequired();
 
+                    b.Property<string>("DirectionCode")
+                        .IsRequired();
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DirectionCode");
 
                     b.ToTable("Competence");
                 });
@@ -64,26 +70,13 @@ namespace RPDControlSystem.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
+                    b.Property<int>("Qualification");
+
                     b.Property<int>("QualificationId");
 
                     b.HasKey("Code");
 
-                    b.HasIndex("QualificationId");
-
                     b.ToTable("Direction");
-                });
-
-            modelBuilder.Entity("RPDControlSystem.Models.RPD.DirectionCompetence", b =>
-                {
-                    b.Property<string>("DirectionCode");
-
-                    b.Property<int>("CompetenceId");
-
-                    b.HasKey("DirectionCode", "CompetenceId");
-
-                    b.HasIndex("CompetenceId");
-
-                    b.ToTable("DirectionCompetence");
                 });
 
             modelBuilder.Entity("RPDControlSystem.Models.RPD.Discipline", b =>
@@ -101,49 +94,41 @@ namespace RPDControlSystem.Migrations
 
             modelBuilder.Entity("RPDControlSystem.Models.RPD.DisciplineCompetence", b =>
                 {
-                    b.Property<string>("DisciplineCode");
+                    b.Property<int>("DisciplineInfoId");
 
                     b.Property<int>("CompetenceId");
 
-                    b.Property<string>("PlanCode");
-
-                    b.HasKey("DisciplineCode", "CompetenceId");
+                    b.HasKey("DisciplineInfoId", "CompetenceId");
 
                     b.HasIndex("CompetenceId");
-
-                    b.HasIndex("DisciplineCode", "PlanCode");
 
                     b.ToTable("DisciplineCompetence");
                 });
 
             modelBuilder.Entity("RPDControlSystem.Models.RPD.DisciplineInfo", b =>
                 {
-                    b.Property<string>("PlanCode");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<string>("DisciplineCode");
+                    b.Property<string>("DisciplineCode")
+                        .IsRequired();
+
+                    b.Property<int>("DisciplineType");
+
+                    b.Property<string>("PlanCode")
+                        .IsRequired();
 
                     b.Property<int?>("WorkPlanId");
 
-                    b.HasKey("PlanCode", "DisciplineCode");
+                    b.HasKey("Id");
 
-                    b.HasAlternateKey("DisciplineCode", "PlanCode");
+                    b.HasIndex("DisciplineCode");
+
+                    b.HasIndex("PlanCode");
 
                     b.HasIndex("WorkPlanId");
 
                     b.ToTable("DisciplineInfo");
-                });
-
-            modelBuilder.Entity("RPDControlSystem.Models.RPD.EducationForm", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EducationForm");
                 });
 
             modelBuilder.Entity("RPDControlSystem.Models.RPD.Plan", b =>
@@ -151,14 +136,14 @@ namespace RPDControlSystem.Migrations
                     b.Property<string>("Code")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("EducationForm");
+
                     b.Property<int>("EducationFormId");
 
                     b.Property<string>("ProfileCode")
                         .IsRequired();
 
                     b.HasKey("Code");
-
-                    b.HasIndex("EducationFormId");
 
                     b.HasIndex("ProfileCode");
 
@@ -196,34 +181,8 @@ namespace RPDControlSystem.Migrations
                     b.ToTable("ProfileCompetence");
                 });
 
-            modelBuilder.Entity("RPDControlSystem.Models.RPD.Qualification", b =>
+            modelBuilder.Entity("RPDControlSystem.Models.RPD.Competence", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Qualification");
-                });
-
-            modelBuilder.Entity("RPDControlSystem.Models.RPD.Direction", b =>
-                {
-                    b.HasOne("RPDControlSystem.Models.RPD.Qualification", "Qualification")
-                        .WithMany()
-                        .HasForeignKey("QualificationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("RPDControlSystem.Models.RPD.DirectionCompetence", b =>
-                {
-                    b.HasOne("RPDControlSystem.Models.RPD.Competence", "Competence")
-                        .WithMany()
-                        .HasForeignKey("CompetenceId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("RPDControlSystem.Models.RPD.Direction", "Direction")
                         .WithMany("Competencies")
                         .HasForeignKey("DirectionCode")
@@ -233,13 +192,14 @@ namespace RPDControlSystem.Migrations
             modelBuilder.Entity("RPDControlSystem.Models.RPD.DisciplineCompetence", b =>
                 {
                     b.HasOne("RPDControlSystem.Models.RPD.Competence", "Competence")
-                        .WithMany()
+                        .WithMany("Disciplines")
                         .HasForeignKey("CompetenceId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("RPDControlSystem.Models.RPD.DisciplineInfo", "Discipline")
+                    b.HasOne("RPDControlSystem.Models.RPD.DisciplineInfo", "DisciplineInfo")
                         .WithMany("Competencies")
-                        .HasForeignKey("DisciplineCode", "PlanCode");
+                        .HasForeignKey("DisciplineInfoId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("RPDControlSystem.Models.RPD.DisciplineInfo", b =>
@@ -261,11 +221,6 @@ namespace RPDControlSystem.Migrations
 
             modelBuilder.Entity("RPDControlSystem.Models.RPD.Plan", b =>
                 {
-                    b.HasOne("RPDControlSystem.Models.RPD.EducationForm", "EducationForm")
-                        .WithMany()
-                        .HasForeignKey("EducationFormId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("RPDControlSystem.Models.RPD.Profile", "Profile")
                         .WithMany("Plans")
                         .HasForeignKey("ProfileCode")
@@ -274,7 +229,7 @@ namespace RPDControlSystem.Migrations
 
             modelBuilder.Entity("RPDControlSystem.Models.RPD.Profile", b =>
                 {
-                    b.HasOne("RPDControlSystem.Models.RPD.Direction", "Directions")
+                    b.HasOne("RPDControlSystem.Models.RPD.Direction", "Direction")
                         .WithMany("Profiles")
                         .HasForeignKey("DirectionCode")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -283,7 +238,7 @@ namespace RPDControlSystem.Migrations
             modelBuilder.Entity("RPDControlSystem.Models.RPD.ProfileCompetence", b =>
                 {
                     b.HasOne("RPDControlSystem.Models.RPD.Competence", "Competence")
-                        .WithMany()
+                        .WithMany("Profiles")
                         .HasForeignKey("CompetenceId")
                         .OnDelete(DeleteBehavior.Cascade);
 

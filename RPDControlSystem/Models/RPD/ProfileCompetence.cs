@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace RPDControlSystem.Models.RPD
 {
-    public class ProfileCompetence : CompetenceInfo
+    public class ProfileCompetence
     {
+        [Required]
         public string ProfileCode { get; set; }
         public Profile Profile { get; set; }
+
+        [Required]
+        public int CompetenceId { get; set; }
+        public Competence Competence { get; set; }
     }
 }

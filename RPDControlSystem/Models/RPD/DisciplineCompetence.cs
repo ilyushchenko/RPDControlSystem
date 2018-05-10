@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace RPDControlSystem.Models.RPD
 {
-    public class DisciplineCompetence : CompetenceInfo
+    public class DisciplineCompetence
     {
-        public string DisciplineCode { get; set; }
-        public string PlanCode { get; set; }
-        public DisciplineInfo Discipline { get; set; }
+        [Required]
+        public int DisciplineInfoId { get; set; }
+        public DisciplineInfo DisciplineInfo { get; set; }
+
+        [Required]
+        public int CompetenceId { get; set; }
+        public Competence Competence { get; set; }
     }
 }

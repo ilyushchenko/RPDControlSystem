@@ -10,17 +10,17 @@ namespace RPDControlSystem.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Competence",
+                name: "Direction",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Code = table.Column<string>(nullable: false),
-                    Description = table.Column<string>(nullable: false)
+                    Name = table.Column<string>(nullable: false),
+                    Qualification = table.Column<int>(nullable: false),
+                    QualificationId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Competence", x => x.Id);
+                    table.PrimaryKey("PK_Direction", x => x.Code);
                 });
 
             migrationBuilder.CreateTable(
@@ -33,19 +33,6 @@ namespace RPDControlSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Discipline", x => x.Code);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EducationForm",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EducationForm", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,55 +51,20 @@ namespace RPDControlSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Qualification",
+                name: "Competence",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Qualification", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Direction",
-                columns: table => new
-                {
                     Code = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    QualificationId = table.Column<int>(nullable: false)
+                    Description = table.Column<string>(nullable: false),
+                    DirectionCode = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Direction", x => x.Code);
+                    table.PrimaryKey("PK_Competence", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Direction_Qualification_QualificationId",
-                        column: x => x.QualificationId,
-                        principalTable: "Qualification",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DirectionCompetence",
-                columns: table => new
-                {
-                    DirectionCode = table.Column<string>(nullable: false),
-                    CompetenceId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DirectionCompetence", x => new { x.DirectionCode, x.CompetenceId });
-                    table.ForeignKey(
-                        name: "FK_DirectionCompetence_Competence_CompetenceId",
-                        column: x => x.CompetenceId,
-                        principalTable: "Competence",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DirectionCompetence_Direction_DirectionCode",
+                        name: "FK_Competence_Direction_DirectionCode",
                         column: x => x.DirectionCode,
                         principalTable: "Direction",
                         principalColumn: "Code",
@@ -143,18 +95,13 @@ namespace RPDControlSystem.Migrations
                 columns: table => new
                 {
                     Code = table.Column<string>(nullable: false),
+                    EducationForm = table.Column<int>(nullable: false),
                     EducationFormId = table.Column<int>(nullable: false),
                     ProfileCode = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Plan", x => x.Code);
-                    table.ForeignKey(
-                        name: "FK_Plan_EducationForm_EducationFormId",
-                        column: x => x.EducationFormId,
-                        principalTable: "EducationForm",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Plan_Profile_ProfileCode",
                         column: x => x.ProfileCode,
@@ -191,14 +138,16 @@ namespace RPDControlSystem.Migrations
                 name: "DisciplineInfo",
                 columns: table => new
                 {
-                    PlanCode = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     DisciplineCode = table.Column<string>(nullable: false),
+                    DisciplineType = table.Column<int>(nullable: false),
+                    PlanCode = table.Column<string>(nullable: false),
                     WorkPlanId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DisciplineInfo", x => new { x.PlanCode, x.DisciplineCode });
-                    table.UniqueConstraint("AK_DisciplineInfo_DisciplineCode_PlanCode", x => new { x.DisciplineCode, x.PlanCode });
+                    table.PrimaryKey("PK_DisciplineInfo", x => x.Id);
                     table.ForeignKey(
                         name: "FK_DisciplineInfo_Discipline_DisciplineCode",
                         column: x => x.DisciplineCode,
@@ -223,13 +172,12 @@ namespace RPDControlSystem.Migrations
                 name: "DisciplineCompetence",
                 columns: table => new
                 {
-                    DisciplineCode = table.Column<string>(nullable: false),
-                    CompetenceId = table.Column<int>(nullable: false),
-                    PlanCode = table.Column<string>(nullable: true)
+                    DisciplineInfoId = table.Column<int>(nullable: false),
+                    CompetenceId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DisciplineCompetence", x => new { x.DisciplineCode, x.CompetenceId });
+                    table.PrimaryKey("PK_DisciplineCompetence", x => new { x.DisciplineInfoId, x.CompetenceId });
                     table.ForeignKey(
                         name: "FK_DisciplineCompetence_Competence_CompetenceId",
                         column: x => x.CompetenceId,
@@ -237,22 +185,17 @@ namespace RPDControlSystem.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DisciplineCompetence_DisciplineInfo_DisciplineCode_PlanCode",
-                        columns: x => new { x.DisciplineCode, x.PlanCode },
+                        name: "FK_DisciplineCompetence_DisciplineInfo_DisciplineInfoId",
+                        column: x => x.DisciplineInfoId,
                         principalTable: "DisciplineInfo",
-                        principalColumns: new[] { "PlanCode", "DisciplineCode" },
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Direction_QualificationId",
-                table: "Direction",
-                column: "QualificationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DirectionCompetence_CompetenceId",
-                table: "DirectionCompetence",
-                column: "CompetenceId");
+                name: "IX_Competence_DirectionCode",
+                table: "Competence",
+                column: "DirectionCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DisciplineCompetence_CompetenceId",
@@ -260,19 +203,19 @@ namespace RPDControlSystem.Migrations
                 column: "CompetenceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DisciplineCompetence_DisciplineCode_PlanCode",
-                table: "DisciplineCompetence",
-                columns: new[] { "DisciplineCode", "PlanCode" });
+                name: "IX_DisciplineInfo_DisciplineCode",
+                table: "DisciplineInfo",
+                column: "DisciplineCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DisciplineInfo_PlanCode",
+                table: "DisciplineInfo",
+                column: "PlanCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DisciplineInfo_WorkPlanId",
                 table: "DisciplineInfo",
                 column: "WorkPlanId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Plan_EducationFormId",
-                table: "Plan",
-                column: "EducationFormId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Plan_ProfileCode",
@@ -292,9 +235,6 @@ namespace RPDControlSystem.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "DirectionCompetence");
-
             migrationBuilder.DropTable(
                 name: "DisciplineCompetence");
 
@@ -317,16 +257,10 @@ namespace RPDControlSystem.Migrations
                 name: "File");
 
             migrationBuilder.DropTable(
-                name: "EducationForm");
-
-            migrationBuilder.DropTable(
                 name: "Profile");
 
             migrationBuilder.DropTable(
                 name: "Direction");
-
-            migrationBuilder.DropTable(
-                name: "Qualification");
         }
     }
 }

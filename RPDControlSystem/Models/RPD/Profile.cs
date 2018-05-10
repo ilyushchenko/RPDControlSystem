@@ -11,12 +11,12 @@ namespace RPDControlSystem.Models.RPD
         [Required]
         public string Name { get; set; }
 
+        [Required]
+        public string DirectionCode { get; set; }
+        public Direction Direction { get; set; }
+
         public List<Plan> Plans { get; set; }
 
         public List<ProfileCompetence> Competencies { get; set; }
-
-        [Required]
-        public string DirectionCode { get; set; }
-        public Direction Directions { get; set; }
     }
 }
