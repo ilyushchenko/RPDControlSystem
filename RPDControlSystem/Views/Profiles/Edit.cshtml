@@ -30,6 +30,26 @@
     </div>
 </div>
 
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Компетенции профиля</h4>
+        @if (Model.Competencies != null && Model.Competencies.Count > 0)
+        {
+            Html.RenderPartial("_ShowCompetences", Model.Competencies.Select(c=>c.Competence));
+        }
+        else
+        {
+            <p>Компетенций нет</p>
+        }
+    </div>
+    <div class="col-md-6">
+        <h4>Добавить компетенцию</h4>
+        @{Html.RenderPartial("_AddProfileCompetence", new ProfileCompetence() { ProfileCode = Model.Code });}
+    </div>
+</div>
+
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

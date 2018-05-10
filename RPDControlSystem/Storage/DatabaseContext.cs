@@ -62,5 +62,7 @@ namespace RPDControlSystem.Storage
         public DbSet<Discipline> Discipline { get; set; }
 
         public DbSet<DisciplineInfo> DisciplineInfo { get; set; }
+
+        public DbSet<RPDControlSystem.Models.RPD.ProfileCompetence> ProfileCompetence { get; set; }
     }
 }

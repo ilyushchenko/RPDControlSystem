@@ -77,12 +77,18 @@ namespace RPDControlSystem.Controllers
                 return NotFound();
             }
 
-            var profile = await _context.Profile.SingleOrDefaultAsync(m => m.Code == id);
+            var profile = await _context.Profile.Include(c => c.Competencies).Include(d => d.Direction).ThenInclude(c => c.Competencies).SingleOrDefaultAsync(m => m.Code == id);
             if (profile == null)
             {
                 return NotFound();
             }
+
+            var direcrionCompetences = profile.Direction.Competencies;
+
+            var result = direcrionCompetences.Except(profile.Competencies.Select(c => c.Competence));
+
             ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code", profile.DirectionCode);
+            ViewData["CompetenceId"] = new SelectList(result, "Id", "FullName");
             return View(profile);
         }
 
@@ -155,6 +161,22 @@ namespace RPDControlSystem.Controllers
         private bool ProfileExists(string id)
         {
             return _context.Profile.Any(e => e.Code == id);
+        }
+
+        // POST: ProfileCompetences/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProfileCompetence([Bind("ProfileCode,CompetenceId")] ProfileCompetence profileCompetence)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(profileCompetence);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Edit), new { id = profileCompetence.ProfileCode });
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }
