@@ -10,6 +10,7 @@ namespace RPDControlSystem.Models.RPD
     public class Discipline
     {
         [Key]
+        [Required]
         public string Code { get; set; }
 
         [Required]
