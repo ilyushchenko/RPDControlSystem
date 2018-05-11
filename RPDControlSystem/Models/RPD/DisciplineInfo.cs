@@ -29,6 +29,10 @@ namespace RPDControlSystem.Models.RPD
         public int? WorkPlanId { get; set; }
         public File WorkPlan { get; set; }
 
+        [Display(Name = "Профиль преподавателя")]
+        public int? TeacherProfileId { get; set; }
+        public TeacherProfile TeacherProfile { get; set; }
+
         [NotMapped]
         [Display(Name = "Наличие РПД")]
         public bool WorkPlanExist
