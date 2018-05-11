@@ -30,11 +30,38 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Directions" asp-action="Index">Directions</a></li>
-                    <li><a asp-area="" asp-controller="Plans" asp-action="Index">Plans</a></li>
-                    <li><a asp-area="" asp-controller="Profiles" asp-action="Index">Profiles</a></li>
-                    <li><a asp-area="" asp-controller="Disciplines" asp-action="Index">Disciplines</a></li>
-                    <li><a asp-area="" asp-controller="DisciplineInfoes" asp-action="Index">DisciplineInfoes</a></li>
+                    <li class="dropdown">
+                        <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Профили и направления
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a asp-area="" asp-controller="Directions" asp-action="Index">Направления</a></li>
+                            <li><a asp-area="" asp-controller="Profiles" asp-action="Index">Профили</a></li>
+                        </ul>
+                    </li>
+                    <li><a asp-area="" asp-controller="Plans" asp-action="Index">Учебные планы</a></li>
+                    <li class="dropdown">
+                        <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Дисциплины
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a asp-area="" asp-controller="Disciplines" asp-action="Index">Дисциплины</a></li>
+                            <li><a asp-area="" asp-controller="DisciplineInfoes" asp-action="Index">Дисциплины учебных планов</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Администрирование
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a asp-area="" asp-controller="Degrees" asp-action="Index">Ученые степени</a></li>
+                            <li><a asp-area="" asp-controller="Posts" asp-action="Index">Должности</a></li>
+                            <li><a asp-area="" asp-controller="TeacherProfiles" asp-action="Index">Профили преподавателей</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
