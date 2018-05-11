@@ -29,14 +29,30 @@
                 <span asp-validation-for="DisciplineType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="WorkPlanId" class="control-label"></label>
-                <select asp-for="WorkPlanId" class="form-control" asp-items="ViewBag.WorkPlanId"></select>
-                <span asp-validation-for="WorkPlanId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </form>
+    </div>
+    <div class="col-md-4">
+        <form asp-action="UploadRPDFile" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <input type="file" name="uploadedFile" class="form-control" /><br>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Загрузить" class="btn btn-default" />
+            </div>
+        </form>
+
+        @if (Model.WorkPlanExist && Model.WorkPlan != null)
+        {
+            <p>
+                Ссылка на файл:
+                <a href="@Model.WorkPlan.FullPath">@Model.WorkPlan.BaseName</a>
+            </p>
+        }
+
+
     </div>
 </div>
 

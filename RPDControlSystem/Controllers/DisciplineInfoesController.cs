@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +16,12 @@ namespace RPDControlSystem.Controllers
     public class DisciplineInfoesController : Controller
     {
         private readonly DatabaseContext _context;
+        private readonly IHostingEnvironment _appEnvironment;
 
-        public DisciplineInfoesController(DatabaseContext context)
+        public DisciplineInfoesController(DatabaseContext context, IHostingEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: DisciplineInfoes
@@ -90,6 +94,7 @@ namespace RPDControlSystem.Controllers
                         .ThenInclude(p => p.Competencies)
                             .ThenInclude(c => c.Competence)
                 .Include(c => c.Competencies)
+                .Include(w => w.WorkPlan)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (disciplineInfo == null)
             {
@@ -197,6 +202,38 @@ namespace RPDControlSystem.Controllers
             ViewData["CompetenceId"] = new SelectList(_context.Competence, "Id", "Code", disciplineCompetence.CompetenceId);
             ViewData["DisciplineInfoId"] = new SelectList(_context.DisciplineInfo, "Id", "DisciplineCode", disciplineCompetence.DisciplineInfoId);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadRPDFile(IFormFile uploadedFile)
+        {
+            if (uploadedFile != null)
+            {
+                FileManager fm = new FileManager(_context, _appEnvironment);
+
+                File file = fm.SaveFile(uploadedFile);
+
+                int id = int.Parse(Request.Form["id"]);
+
+                var disciplineInfo = await _context.DisciplineInfo.Include(f => f.WorkPlan).SingleOrDefaultAsync(m => m.Id == id);
+                if (disciplineInfo == null)
+                {
+                    return NotFound();
+                }
+
+                if(disciplineInfo.WorkPlanExist)
+                {
+                    fm.DeleteFile(disciplineInfo.WorkPlan);
+                }
+
+                disciplineInfo.WorkPlan = file;
+
+                _context.SaveChanges();
+
+                return RedirectToAction(nameof(Edit), new { id });
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

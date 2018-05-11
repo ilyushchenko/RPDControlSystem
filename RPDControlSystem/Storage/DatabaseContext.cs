@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RPDControlSystem.Models;
 using RPDControlSystem.Models.RPD;
 
 namespace RPDControlSystem.Storage
@@ -66,5 +67,7 @@ namespace RPDControlSystem.Storage
         public DbSet<RPDControlSystem.Models.RPD.ProfileCompetence> ProfileCompetence { get; set; }
 
         public DbSet<RPDControlSystem.Models.RPD.DisciplineCompetence> DisciplineCompetence { get; set; }
+
+        public DbSet<File> Files { get; set; }
     }
 }
