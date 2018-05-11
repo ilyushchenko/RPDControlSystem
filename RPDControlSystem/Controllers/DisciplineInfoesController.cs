@@ -84,11 +84,25 @@ namespace RPDControlSystem.Controllers
                 return NotFound();
             }
 
-            var disciplineInfo = await _context.DisciplineInfo.SingleOrDefaultAsync(m => m.Id == id);
+            var disciplineInfo = await _context.DisciplineInfo
+                .Include(p => p.Plan)
+                    .ThenInclude(p => p.Profile)
+                        .ThenInclude(p => p.Competencies)
+                            .ThenInclude(c => c.Competence)
+                .Include(c => c.Competencies)
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (disciplineInfo == null)
             {
                 return NotFound();
             }
+
+            var profileCompetence = disciplineInfo.Plan.Profile.Competencies.Select(c => c.Competence);
+
+            //ViewBag.CompetenceId
+
+            var result = profileCompetence.Except(disciplineInfo.Competencies.Select(c => c.Competence));
+
+            ViewData["CompetenceId"] = new SelectList(result, "Id", "FullName");
             ViewData["DisciplineCode"] = new SelectList(_context.Discipline, "Code", "Code", disciplineInfo.DisciplineCode);
             ViewData["PlanCode"] = new SelectList(_context.Plan, "Code", "Code", disciplineInfo.PlanCode);
             ViewData["WorkPlanId"] = new SelectList(_context.Set<File>(), "Id", "BaseName", disciplineInfo.WorkPlanId);
@@ -168,6 +182,21 @@ namespace RPDControlSystem.Controllers
         private bool DisciplineInfoExists(int id)
         {
             return _context.DisciplineInfo.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddDisciplineCompetence([Bind("DisciplineInfoId,CompetenceId")] DisciplineCompetence disciplineCompetence)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(disciplineCompetence);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Edit), new { id = disciplineCompetence.DisciplineInfoId });
+            }
+            ViewData["CompetenceId"] = new SelectList(_context.Competence, "Id", "Code", disciplineCompetence.CompetenceId);
+            ViewData["DisciplineInfoId"] = new SelectList(_context.DisciplineInfo, "Id", "DisciplineCode", disciplineCompetence.DisciplineInfoId);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
