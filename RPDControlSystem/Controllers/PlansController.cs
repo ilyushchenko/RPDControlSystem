@@ -10,23 +10,23 @@ using RPDControlSystem.Storage;
 
 namespace RPDControlSystem.Controllers
 {
-    public class ProfilesController : Controller
+    public class PlansController : Controller
     {
         private readonly DatabaseContext _context;
 
-        public ProfilesController(DatabaseContext context)
+        public PlansController(DatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: Profiles
+        // GET: Plans
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Profile.Include(p => p.Direction);
+            var databaseContext = _context.Plan.Include(p => p.Profile);
             return View(await databaseContext.ToListAsync());
         }
 
-        // GET: Profiles/Details/5
+        // GET: Plans/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -34,43 +34,51 @@ namespace RPDControlSystem.Controllers
                 return NotFound();
             }
 
-            var profile = await _context.Profile
-                .Include(p => p.Direction)
-                .Include(p => p.Plans)
+            var plan = await _context.Plan
+                .Include(p => p.Profile)
+                .Include(d => d.Disciplines)
+                    .ThenInclude(c => c.Discipline)
                 .SingleOrDefaultAsync(m => m.Code == id);
-            if (profile == null)
+            if (plan == null)
             {
                 return NotFound();
             }
 
-            return View(profile);
+            var disciplinesToAdd = _context.Discipline;
+
+            var result = disciplinesToAdd.Except(plan.Disciplines.Select( d => d.Discipline));
+
+
+            ViewData["DisciplineCode"] = new SelectList(result, "Code", "Name");
+
+            return View(plan);
         }
 
-        // GET: Profiles/Create
+        // GET: Plans/Create
         public IActionResult Create()
         {
-            ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code");
+            ViewData["ProfileCode"] = new SelectList(_context.Profile, "Code", "Code");
             return View();
         }
 
-        // POST: Profiles/Create
+        // POST: Plans/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Code,Name,DirectionCode")] Profile profile)
+        public async Task<IActionResult> Create([Bind("Code,EducationForm,ProfileCode")] Plan plan)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(profile);
+                _context.Add(plan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code", profile.DirectionCode);
-            return View(profile);
+            ViewData["ProfileCode"] = new SelectList(_context.Profile, "Code", "Code", plan.ProfileCode);
+            return View(plan);
         }
 
-        // GET: Profiles/Edit/5
+        // GET: Plans/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -78,29 +86,23 @@ namespace RPDControlSystem.Controllers
                 return NotFound();
             }
 
-            var profile = await _context.Profile.Include(c => c.Competencies).Include(d => d.Direction).ThenInclude(c => c.Competencies).SingleOrDefaultAsync(m => m.Code == id);
-            if (profile == null)
+            var plan = await _context.Plan.SingleOrDefaultAsync(m => m.Code == id);
+            if (plan == null)
             {
                 return NotFound();
             }
-
-            var direcrionCompetences = profile.Direction.Competencies;
-
-            var result = direcrionCompetences.Except(profile.Competencies.Select(c => c.Competence));
-
-            ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code", profile.DirectionCode);
-            ViewData["CompetenceId"] = new SelectList(result, "Id", "FullName");
-            return View(profile);
+            ViewData["ProfileCode"] = new SelectList(_context.Profile, "Code", "Code", plan.ProfileCode);
+            return View(plan);
         }
 
-        // POST: Profiles/Edit/5
+        // POST: Plans/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Code,Name,DirectionCode")] Profile profile)
+        public async Task<IActionResult> Edit(string id, [Bind("Code,EducationForm,ProfileCode")] Plan plan)
         {
-            if (id != profile.Code)
+            if (id != plan.Code)
             {
                 return NotFound();
             }
@@ -109,12 +111,12 @@ namespace RPDControlSystem.Controllers
             {
                 try
                 {
-                    _context.Update(profile);
+                    _context.Update(plan);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProfileExists(profile.Code))
+                    if (!PlanExists(plan.Code))
                     {
                         return NotFound();
                     }
@@ -125,11 +127,11 @@ namespace RPDControlSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DirectionCode"] = new SelectList(_context.Direction, "Code", "Code", profile.DirectionCode);
-            return View(profile);
+            ViewData["ProfileCode"] = new SelectList(_context.Profile, "Code", "Code", plan.ProfileCode);
+            return View(plan);
         }
 
-        // GET: Profiles/Delete/5
+        // GET: Plans/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -137,61 +139,45 @@ namespace RPDControlSystem.Controllers
                 return NotFound();
             }
 
-            var profile = await _context.Profile
-                .Include(p => p.Direction)
+            var plan = await _context.Plan
+                .Include(p => p.Profile)
                 .SingleOrDefaultAsync(m => m.Code == id);
-            if (profile == null)
+            if (plan == null)
             {
                 return NotFound();
             }
 
-            return View(profile);
+            return View(plan);
         }
 
-        // POST: Profiles/Delete/5
+        // POST: Plans/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var profile = await _context.Profile.SingleOrDefaultAsync(m => m.Code == id);
-            _context.Profile.Remove(profile);
+            var plan = await _context.Plan.SingleOrDefaultAsync(m => m.Code == id);
+            _context.Plan.Remove(plan);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProfileExists(string id)
+        private bool PlanExists(string id)
         {
-            return _context.Profile.Any(e => e.Code == id);
+            return _context.Plan.Any(e => e.Code == id);
         }
 
-        // POST: ProfileCompetences/Create
+        // POST: DisciplineInfoes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProfileCompetence([Bind("ProfileCode,CompetenceId")] ProfileCompetence profileCompetence)
+        public async Task<IActionResult> AddDisciplineInfo([Bind("Id,DisciplineCode,PlanCode,DisciplineType")] DisciplineInfo disciplineInfo)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(profileCompetence);
+                _context.Add(disciplineInfo);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Edit), new { id = profileCompetence.ProfileCode });
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
-        // POST: Plans/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddPlan([Bind("Code,EducationForm,ProfileCode")] Plan plan)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(plan);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new { id = plan.ProfileCode });
+                return RedirectToAction(nameof(Details), new { id = disciplineInfo.PlanCode });
             }
             return RedirectToAction(nameof(Index));
         }

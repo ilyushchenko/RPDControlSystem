@@ -1,0 +1,25 @@
+﻿@model RPDControlSystem.Models.RPD.DisciplineInfo
+
+<form asp-action="AddDisciplineInfo">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="PlanCode" />
+    <div class="form-group">
+        <label asp-for="DisciplineCode" class="control-label"></label>
+        <select asp-for="DisciplineCode" class="form-control" asp-items="ViewBag.DisciplineCode"></select>
+    </div>
+    <div class="form-group">
+        <label asp-for="DisciplineType" class="control-label"></label>
+        <select asp-for="DisciplineType" class="form-control">
+            <option value="@DisciplineType.Base">Обязательная</option>
+            <option value="@DisciplineType.Additional">По выбору</option>
+        </select>
+        <span asp-validation-for="DisciplineType" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-default" />
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

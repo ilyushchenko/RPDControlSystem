@@ -6,13 +6,16 @@ namespace RPDControlSystem.Models.RPD
     public class Plan
     {
         [Key]
+        [Required]
+        [Display(Name = "Код плана")]
         public string Code { get; set; }
 
         [Required]
-        public int EducationFormId { get; set; }
+        [Display(Name = "Форма обучения")]
         public EducationForm EducationForm { get; set; }
 
         [Required]
+        [Display(Name = "Код профиля обучения")]
         public string ProfileCode { get; set; }
         public Profile Profile { get; set; }
 

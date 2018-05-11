@@ -1,0 +1,49 @@
+﻿@model RPDControlSystem.Models.RPD.DisciplineInfo
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>DisciplineInfo</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="DisciplineCode" class="control-label"></label>
+                <select asp-for="DisciplineCode" class="form-control" asp-items="ViewBag.DisciplineCode"></select>
+                <span asp-validation-for="DisciplineCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlanCode" class="control-label"></label>
+                <select asp-for="PlanCode" class="form-control" asp-items="ViewBag.PlanCode"></select>
+                <span asp-validation-for="PlanCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DisciplineType" class="control-label"></label>
+                <select asp-for="DisciplineType" class="form-control"></select>
+                <span asp-validation-for="DisciplineType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WorkPlanId" class="control-label"></label>
+                <select asp-for="WorkPlanId" class="form-control" asp-items="ViewBag.WorkPlanId"></select>
+                <span asp-validation-for="WorkPlanId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

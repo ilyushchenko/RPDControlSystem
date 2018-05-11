@@ -5,25 +5,46 @@
 }
 
 <h2>Details</h2>
-
-<div>
-    <h4>Profile</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Direction)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Direction.Code)
-        </dd>
-    </dl>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Profile</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Direction)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Direction.Code)
+            </dd>
+        </dl>
+    </div>
 </div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Планы обучения</h4>
+        @if (Model.Plans != null && Model.Plans.Count > 0)
+        {
+            Html.RenderPartial("_ShowPlans", Model.Plans);
+        }
+        else
+        {
+            <p>Планов обучения нет</p>
+        }
+    </div>
+    <div class="col-md-6">
+        @{ Html.RenderPartial("_AddPlan", new Plan() { ProfileCode = Model.Code });}
+    </div>
+</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Code">Edit</a> |
     <a asp-action="Index">Back to List</a>
