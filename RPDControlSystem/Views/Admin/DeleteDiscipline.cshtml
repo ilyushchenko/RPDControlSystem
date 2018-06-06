@@ -1,0 +1,27 @@
+﻿@model RPDControlSystem.Models.RPD.Discipline
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Дисциплины</h2>
+
+<h3>Вы уверены, что хотите удалить дисциплиу?</h3>
+<div>
+    <h4>Дисциплина</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+    
+    <form asp-action="DeleteDiscipline">
+        <input type="hidden" asp-for="Code" />
+        <input type="submit" value="Удалить" class="btn btn-default" /> |
+        <a asp-action="Index">Назад</a>
+    </form>
+</div>

@@ -1,0 +1,35 @@
+﻿@model RPDControlSystem.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+<div class="content-widget login-widget white-bg">
+    <header class="text-center">
+        <h1>Вход</h1>
+    </header>
+    <form method="post" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" class="login-form">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-user fa-fw"></i></div>
+                <input asp-for="Email" class="form-control" placeholder="email@domain.com">
+            </div>
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-key fa-fw"></i></div>
+                <input asp-for="Password" class="form-control" placeholder="******">
+            </div>
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="form-group">
+            <div class="checkbox squaredTwo">
+                <input asp-for="RememberMe" type="checkbox" id="c1" name="cc" />
+                <label for="c1"><span></span>Запомнить</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="blue-button width-100">Войти</button>
+        </div>
+    </form>
+</div>

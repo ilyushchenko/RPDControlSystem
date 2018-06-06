@@ -1,0 +1,50 @@
+﻿@model IEnumerable<RPDControlSystem.Models.RPD.DisciplineInfo>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FullCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DisciplineType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Discipline.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Plan)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TeacherProfile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkPlan)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details" asp-controller="DisciplineInfoes" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.FullCode)</a>
+                </td>
+                <td>
+                    @item.DisciplineType
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Discipline.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Plan.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TeacherProfile.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkPlan.BaseName)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

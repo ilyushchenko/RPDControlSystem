@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RPDControlSystem.Models;
 using RPDControlSystem.Models.RPD;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace RPDControlSystem.Storage
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : IdentityDbContext<TeacherProfile>
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {

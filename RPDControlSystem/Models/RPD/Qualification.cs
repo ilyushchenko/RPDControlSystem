@@ -10,6 +10,7 @@ namespace RPDControlSystem.Models.RPD
     {
         Bachelor,
         Masetr,
-        Specialist
+        Specialist,
+        Other
     }
 }

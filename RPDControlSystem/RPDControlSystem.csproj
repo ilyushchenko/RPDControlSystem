@@ -16,6 +16,8 @@
     <Compile Remove="Migrations\20180511175324_TeacherProfile.Designer.cs" />
     <Compile Remove="Migrations\20180511180102_TeacherProfile.cs" />
     <Compile Remove="Migrations\20180511180102_TeacherProfile.Designer.cs" />
+    <Compile Remove="Migrations\20180531145450_ChangeNullState.cs" />
+    <Compile Remove="Migrations\20180531145450_ChangeNullState.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

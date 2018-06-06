@@ -26,42 +26,25 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">RPDControlSystem</a>
+                <a asp-area="" asp-controller="Admin" asp-action="Index" class="navbar-brand">RPDControlSystem</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Профили и направления
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a asp-area="" asp-controller="Directions" asp-action="Index">Направления</a></li>
-                            <li><a asp-area="" asp-controller="Profiles" asp-action="Index">Профили</a></li>
-                        </ul>
-                    </li>
-                    <li><a asp-area="" asp-controller="Plans" asp-action="Index">Учебные планы</a></li>
-                    <li class="dropdown">
-                        <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            Дисциплины
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a asp-area="" asp-controller="Disciplines" asp-action="Index">Дисциплины</a></li>
-                            <li><a asp-area="" asp-controller="DisciplineInfoes" asp-action="Index">Дисциплины учебных планов</a></li>
-                        </ul>
-                    </li>
                     <li class="dropdown">
                         <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
                             Администрирование
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a asp-area="" asp-controller="Degrees" asp-action="Index">Ученые степени</a></li>
-                            <li><a asp-area="" asp-controller="Posts" asp-action="Index">Должности</a></li>
-                            <li><a asp-area="" asp-controller="TeacherProfiles" asp-action="Index">Профили преподавателей</a></li>
+                            <li><a asp-action="GetDegrees">Ученые степени</a></li>
+                            <li><a asp-action="GetPosts">Должности</a></li>
                         </ul>
                     </li>
+                    <li><a asp-action="Getusers">Профили преподавателей</a></li>
+                    <li><a asp-action="GetDisciplines">Дисциплины</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a asp-controller="Home" asp-action="Index">На сайт</a></li>
                 </ul>
             </div>
         </div>
@@ -70,7 +53,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - RPDControlSystem</p>
+            <p>&copy; 2018 - RPDControlSystem - Pavel Ilyushchenko</p>
         </footer>
     </div>
 

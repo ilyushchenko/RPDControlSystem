@@ -1,0 +1,84 @@
+﻿@model RPDControlSystem.ViewModels.CreateTeacherViewModel
+@{
+    ViewBag.Title = "Добавление пользователя";
+}
+
+<h2>Пользователи</h2>
+
+<h3>Добавление пользователя</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+
+        <form asp-action="CreateUser">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input type="text" asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MiddleName" class="control-label"></label>
+                <input type="text" asp-for="MiddleName" class="form-control" />
+                <span asp-validation-for="MiddleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input type="text" asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Login" class="control-label"></label>
+                <input type="text" asp-for="Login" class="form-control" />
+                <span asp-validation-for="Login" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DegreeId" class="control-label"></label>
+                <select asp-for="DegreeId" class="form-control" asp-items="ViewBag.DegreeId">
+                    <option value="">Без степени</option>
+                </select>
+                <span asp-validation-for="DegreeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PostId" class="control-label"></label>
+                <select asp-for="PostId" class="form-control" asp-items="ViewBag.PostId">
+                    <option value="">Без должности</option>
+                </select>
+                <span asp-validation-for="PostId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Email</label>
+                <input type="email" asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label">Пароль</label>
+                <input type="password" asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Roles"></label>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" name="Roles" value="admin" class="form-check-input" id="chbAdmin" />
+                    <label class="form-check-label" for="chbAdmin">Администратор</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" name="Roles" value="teacher" class="form-check-input" id="chbTeacher" />
+                    <label class="form-check-label" for="chbTeacher">Преподаватель</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Добавить" class="btn btn-default" />
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

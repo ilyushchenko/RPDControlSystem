@@ -1,0 +1,35 @@
+﻿@model IEnumerable<RPDControlSystem.Models.RPD.Discipline>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Дисциплины</h2>
+
+<p>
+    <a asp-action="CreateDiscipline">Добавить</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="DetailsDiscipline" asp-route-id="@item.Code">@Html.DisplayFor(modelItem => item.Name)</a>
+                </td>
+                <td>
+                    <a asp-action="EditDiscipline" asp-route-id="@item.Code">Редактировать</a> |
+                    <a asp-action="DeleteDiscipline" asp-route-id="@item.Code">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

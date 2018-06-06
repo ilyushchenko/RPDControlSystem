@@ -1,0 +1,55 @@
+﻿@model IEnumerable<RPDControlSystem.ViewModels.PlanCompetenceListViewModel>;
+@{
+    //Layout = null;
+}
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="text-uppercase">Отчет для планов, не покрывающих компетенции</h3>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="text-uppercase">Группировка по плану</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Plan.Code)
+                    </th>
+                    <th>
+                        Код компетенции
+                    </th>
+                    <th>
+                        Описание компетенции
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    bool isFirst = true;
+                    foreach (var competence in item.Competences)
+                    {
+                        <tr>
+                            @if (isFirst)
+                            {
+                                isFirst = false;
+                                <td rowspan="@item.Competences.Count">
+                                    <a asp-action="Details" asp-controller="Plans" asp-route-id="@item.Plan.Code">@Html.DisplayFor(modelItem => item.Plan.Code)</a>
+                                </td>
+                            }
+                            <td>
+                                @Html.DisplayFor(modelItem => competence.Code)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => competence.Description)
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

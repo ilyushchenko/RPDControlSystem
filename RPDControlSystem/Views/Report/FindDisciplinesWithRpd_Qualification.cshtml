@@ -1,0 +1,77 @@
+﻿@model IEnumerable<RPDControlSystem.Models.RPD.DisciplineInfo>
+@{
+    Qualification lastQualification = Qualification.Other;
+    bool isFirst = true;
+    int count = 0;
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="text-uppercase">Группировка по квалификации</h3>
+    </div>
+    <div class="panel-body">
+        @if (Model.Count() > 0)
+        {
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Discipline.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DisciplineType)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PlanCode)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TeacherProfileId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.WorkPlanId)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        if (lastQualification != item.Plan.Profile.Direction.Qualification)
+                        {
+                            lastQualification = item.Plan.Profile.Direction.Qualification;
+                            if (!isFirst)
+                            {
+                                <tr class="accent"><td colspan="4" class="text-right">Итого:</td><td>@count</td></tr>
+                                count = 0;
+                            }
+                            isFirst = false;
+                            <tr class="main"><td colspan="5"><h4>Квалификация: @lastQualification</h4></td></tr>
+                        }
+                        count++;
+                        <tr>
+                            <td>
+                                <a asp-action="Details" asp-controller="DisciplineInfoes" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Discipline.Name)</a>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DisciplineType)
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-controller="Plans" asp-route-id="@item.PlanCode">@Html.DisplayFor(modelItem => item.Plan.Code)</a>
+</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TeacherProfile.Id)
+                            </td>
+                            <td>
+                                <a target="_blank" href="@item.WorkPlan.FullPath">@item.WorkPlan.BaseName</a>
+                            </td>
+                        </tr>
+                    }
+                    <tr class="accent"><td colspan="4" class="text-right">Итого:</td><td>@count</td></tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>Нет данных по данному запросу</p>
+        }
+    </div>
+</div>

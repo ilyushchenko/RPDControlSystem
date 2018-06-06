@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RPDControlSystem.Storage;
+using RPDControlSystem.Models.RPD;
+using Microsoft.AspNetCore.Identity;
 
 namespace RPDControlSystem
 {
@@ -16,7 +18,27 @@ namespace RPDControlSystem
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            var host = BuildWebHost(args);
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var userManager = services.GetRequiredService<UserManager<TeacherProfile>>();
+                    var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+                    Task roleInit = Initializer.InitializeRoleAsync(userManager, rolesManager);
+                    roleInit.Wait();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Ошибка подключения к базе данных.");
+                }
+            }
+
+            host.Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

@@ -33,3 +33,47 @@
         display: none;
     }
 }
+.right
+{
+    float: right;
+}
+
+.table > thead > tr > td.accent,
+.table > tbody > tr > td.accent,
+.table > tfoot > tr > td.accent,
+.table > thead > tr > th.accent,
+.table > tbody > tr > th.accent,
+.table > tfoot > tr > th.accent,
+.table > thead > tr.accent > td,
+.table > tbody > tr.accent > td,
+.table > tfoot > tr.accent > td,
+.table > thead > tr.accent > th,
+.table > tbody > tr.accent > th,
+.table > tfoot > tr.accent > th {
+    background-color: rgba(57, 159, 180, 0.55);
+    color: #FFF;
+}
+
+.table > thead > tr > td,
+.table > thead > tr > th,
+.table > thead > tr > td,
+.table > thead > tr > th,
+.table > thead > tr > td.main,
+.table > tbody > tr > td.main,
+.table > tfoot > tr > td.main,
+.table > thead > tr > th.main,
+.table > tbody > tr > th.main,
+.table > tfoot > tr > th.main,
+.table > thead > tr.main > td,
+.table > tbody > tr.main > td,
+.table > tfoot > tr.main > td,
+.table > thead > tr.main > th,
+.table > tbody > tr.main > th,
+.table > tfoot > tr.main > th {
+    background-color: #39ADB4;
+    color: #FFF;
+}
+
+hr {
+    border-top: 1px solid #333;
+}

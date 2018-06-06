@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,7 @@ namespace RPDControlSystem.Models.RPD
     public class DisciplineInfo
     {
         [Key]
+        [Display(Name = "Идентификатор дисциплины")]
         public int Id { get; set; }
 
         [Required]
@@ -30,7 +32,7 @@ namespace RPDControlSystem.Models.RPD
         public File WorkPlan { get; set; }
 
         [Display(Name = "Профиль преподавателя")]
-        public int? TeacherProfileId { get; set; }
+        public string TeacherProfileId { get; set; }
         public TeacherProfile TeacherProfile { get; set; }
 
         [NotMapped]
@@ -41,6 +43,27 @@ namespace RPDControlSystem.Models.RPD
             {
                 return WorkPlanId != null;
             }
+        }
+
+        [NotMapped]
+        [Display(Name = "Код")]
+        public string FullCode
+        {
+            get
+            {
+                return $"{DisciplineCode}.{Id}";
+            }
+        }
+
+        public bool Search(string query)
+        {
+            query = query.ToLower();
+
+            bool codeContains = DisciplineCode.Contains(query);
+            bool disciplineContains = Discipline != null && Discipline.Name.ToLower().Contains(query);
+            bool planContains = PlanCode.Contains(query);
+
+            return codeContains || disciplineContains || planContains;
         }
     }
 }

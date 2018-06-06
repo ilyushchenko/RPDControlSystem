@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RPDControlSystem.Models.RPD;
 using RPDControlSystem.Storage;
 
 namespace RPDControlSystem
@@ -27,12 +29,27 @@ namespace RPDControlSystem
 
             services.AddDbContext<DatabaseContext>(options => options.UseMySql(connectionString));
 
+            services.AddIdentity<TeacherProfile, IdentityRole>(opt => {
+                // Задание минимальной длинны пароля
+                opt.Password.RequiredLength = 6;
+                // Требование символов
+                opt.Password.RequireNonAlphanumeric = true;
+                // требование нижнего регистра
+                opt.Password.RequireLowercase = true;
+                // требование верхнего регистра
+                opt.Password.RequireUppercase = true;
+                // требование цифр
+                opt.Password.RequireDigit = true;
+                // Задает требование уникальности почты
+                opt.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<DatabaseContext>();
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -43,6 +60,8 @@ namespace RPDControlSystem
             }
 
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

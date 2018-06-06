@@ -2,60 +2,85 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var bo = ViewData["WorkPlanError"];
 }
 
-<h2>Edit</h2>
+<h2>Редактирование</h2>
 
-<h4>DisciplineInfo</h4>
+<h4>Редактирование дисциплины</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="DisciplineCode" class="control-label"></label>
-                <select asp-for="DisciplineCode" class="form-control" asp-items="ViewBag.DisciplineCode"></select>
-                <span asp-validation-for="DisciplineCode" class="text-danger"></span>
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3>Информация</h3>
             </div>
-            <div class="form-group">
-                <label asp-for="PlanCode" class="control-label"></label>
-                <select asp-for="PlanCode" class="form-control" asp-items="ViewBag.PlanCode"></select>
-                <span asp-validation-for="PlanCode" class="text-danger"></span>
+            <div class="panel-body">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="DisciplineCode" class="control-label"></label>
+                        <select asp-for="DisciplineCode" class="form-control" asp-items="ViewBag.DisciplineCode"></select>
+                        <span asp-validation-for="DisciplineCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PlanCode" class="control-label"></label>
+                        <select asp-for="PlanCode" class="form-control" asp-items="ViewBag.PlanCode"></select>
+                        <span asp-validation-for="PlanCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DisciplineType" class="control-label"></label>
+                        <select asp-for="DisciplineType" class="form-control">
+                            <option value="@DisciplineType.Base">@DisciplineType.Base</option>
+                            <option value="@DisciplineType.Additional">@DisciplineType.Additional</option>
+                        </select>
+                        <span asp-validation-for="DisciplineType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TeacherProfileId" class="control-label"></label>
+                        <select asp-for="TeacherProfileId" class="form-control" asp-items="ViewBag.TeacherId">
+                            <option value="">Выберите преподавателя</option>
+                        </select>
+                        <span asp-validation-for="TeacherProfileId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Сохранить" class="btn btn-default" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="DisciplineType" class="control-label"></label>
-                <select asp-for="DisciplineType" class="form-control"></select>
-                <span asp-validation-for="DisciplineType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
+        </div>
     </div>
-    <div class="col-md-4">
-        <form asp-action="UploadRPDFile" method="post" enctype="multipart/form-data">
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <input type="file" name="uploadedFile" class="form-control" /><br>
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3>Файл РПД</h3>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Загрузить" class="btn btn-default" />
+            <div class="panel-body">
+                <form asp-action="UploadRPDFile" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <input type="file" name="uploadedFile" class="form-control" accept=".pdf" /><br>
+                        <span asp-validation-for="WorkPlan" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Загрузить" class="btn btn-default" />
+                    </div>
+                </form>
+
+                @if (Model.WorkPlanExist && Model.WorkPlan != null)
+                {
+                    <p>
+                        Ссылка на файл:
+                        <a href="@Model.WorkPlan.FullPath" target="_blank">@Model.WorkPlan.BaseName</a>
+                    </p>
+                }
+
+
             </div>
-        </form>
-
-        @if (Model.WorkPlanExist && Model.WorkPlan != null)
-        {
-            <p>
-                Ссылка на файл:
-                <a href="@Model.WorkPlan.FullPath">@Model.WorkPlan.BaseName</a>
-            </p>
-        }
-
-
+        </div>
     </div>
 </div>
-
 <hr />
 
 <div class="row">

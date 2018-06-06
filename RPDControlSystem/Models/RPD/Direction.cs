@@ -20,6 +20,7 @@ namespace RPDControlSystem.Models.RPD
         public Qualification Qualification { get; set; }
 
         [NotMapped]
+        [Display(Name = "Код/Название направления подготовки")]
         public string FullName
         {
             get

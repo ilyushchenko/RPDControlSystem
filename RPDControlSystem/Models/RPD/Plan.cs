@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RPDControlSystem.Models.RPD
@@ -19,6 +20,17 @@ namespace RPDControlSystem.Models.RPD
         public string ProfileCode { get; set; }
         public Profile Profile { get; set; }
 
+        [Required]
+        [Display(Name = "Учебный год")]
+        public DateTime EducationYear { get; set; }
+
         public List<DisciplineInfo> Disciplines { get; set; }
+
+        public bool Search(string query)
+        {
+            query = query.ToLower();
+            return Code.Contains(query) ||
+                ProfileCode.Contains(query);
+        }
     }
 }

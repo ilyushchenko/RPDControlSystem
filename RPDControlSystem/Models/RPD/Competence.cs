@@ -7,6 +7,7 @@ namespace RPDControlSystem.Models.RPD
     public class Competence
     {
         [Key]
+        [Display(Name = "Идентификатор компетенции")]
         public int Id { get; set; }
 
         [Required]

@@ -5,6 +5,7 @@ namespace RPDControlSystem.Models.RPD
     public class Degree
     {
         [Required]
+        [Display(Name = "Идентификатор ученой степени")]
         public int Id { get; set; }
 
         [Required]

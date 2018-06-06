@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RPDControlSystem.Models.RPD
 {
@@ -11,9 +7,11 @@ namespace RPDControlSystem.Models.RPD
     {
         [Key]
         [Required]
+        [Display(Name = "Код дисциплины")]
         public string Code { get; set; }
 
         [Required]
+        [Display(Name = "Название дисциплины")]
         public string Name { get; set; }
 
         public List<DisciplineInfo> DisciplinesInfo { get; set; }

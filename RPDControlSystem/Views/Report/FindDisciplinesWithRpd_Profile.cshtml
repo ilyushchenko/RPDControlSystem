@@ -1,0 +1,61 @@
+﻿@model IEnumerable<RPDControlSystem.Models.RPD.DisciplineInfo>
+@{
+    var discipline = Model.FirstOrDefault();
+
+    Qualification lastQualification = Qualification.Other;
+}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DisciplineType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Discipline)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Plan)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TeacherProfile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkPlan)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (lastQualification != item.Plan.Profile.Direction.Qualification)
+            {
+                lastQualification = item.Plan.Profile.Direction.Qualification;
+                <tr class="main"><td colspan="6"><h4>@lastQualification</h4></td></tr>
+            }
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DisciplineType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Discipline.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Plan.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TeacherProfile.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WorkPlan.BaseName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

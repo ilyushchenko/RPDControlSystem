@@ -9,6 +9,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DirectionCode)
+            </th>
             <th>Действия</th>
         </tr>
     </thead>
@@ -26,9 +29,8 @@
                     @Html.DisplayFor(modelItem => item.Direction.Code)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-controller="Competences" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-controller="Competences" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-controller="Competences"  asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="EditCompetence" asp-route-id="@item.Id">Редактировать</a> |
+                    <a asp-action="DeleteCompetence" asp-route-id="@item.Id">Удалить</a>
                 </td>
             </tr>
         }

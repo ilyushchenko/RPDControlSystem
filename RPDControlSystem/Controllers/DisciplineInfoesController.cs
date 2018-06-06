@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -53,11 +55,12 @@ namespace RPDControlSystem.Controllers
         }
 
         // GET: DisciplineInfoes/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["DisciplineCode"] = new SelectList(_context.Discipline, "Code", "Code");
             ViewData["PlanCode"] = new SelectList(_context.Plan, "Code", "Code");
-            ViewData["WorkPlanId"] = new SelectList(_context.Set<File>(), "Id", "BaseName");
+            ViewData["WorkPlanId"] = new SelectList(_context.Set<Models.File>(), "Id", "BaseName");
             return View();
         }
 
@@ -76,11 +79,12 @@ namespace RPDControlSystem.Controllers
             }
             ViewData["DisciplineCode"] = new SelectList(_context.Discipline, "Code", "Code", disciplineInfo.DisciplineCode);
             ViewData["PlanCode"] = new SelectList(_context.Plan, "Code", "Code", disciplineInfo.PlanCode);
-            ViewData["WorkPlanId"] = new SelectList(_context.Set<File>(), "Id", "BaseName", disciplineInfo.WorkPlanId);
+            ViewData["WorkPlanId"] = new SelectList(_context.Set<Models.File>(), "Id", "BaseName", disciplineInfo.WorkPlanId);
             return View(disciplineInfo);
         }
 
         // GET: DisciplineInfoes/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -110,16 +114,19 @@ namespace RPDControlSystem.Controllers
             ViewData["CompetenceId"] = new SelectList(result, "Id", "FullName");
             ViewData["DisciplineCode"] = new SelectList(_context.Discipline, "Code", "Code", disciplineInfo.DisciplineCode);
             ViewData["PlanCode"] = new SelectList(_context.Plan, "Code", "Code", disciplineInfo.PlanCode);
-            ViewData["WorkPlanId"] = new SelectList(_context.Set<File>(), "Id", "BaseName", disciplineInfo.WorkPlanId);
+            ViewData["WorkPlanId"] = new SelectList(_context.Set<Models.File>(), "Id", "BaseName", disciplineInfo.WorkPlanId);
+            ViewData["TeacherId"] = new SelectList(_context.TeacherProfiles, "Id", "FullName", disciplineInfo.TeacherProfileId);
+
             return View(disciplineInfo);
         }
 
         // POST: DisciplineInfoes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DisciplineCode,PlanCode,DisciplineType,WorkPlanId")] DisciplineInfo disciplineInfo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DisciplineCode,PlanCode,DisciplineType,WorkPlanId,TeacherProfileId")] DisciplineInfo disciplineInfo)
         {
             if (id != disciplineInfo.Id)
             {
@@ -148,11 +155,12 @@ namespace RPDControlSystem.Controllers
             }
             ViewData["DisciplineCode"] = new SelectList(_context.Discipline, "Code", "Code", disciplineInfo.DisciplineCode);
             ViewData["PlanCode"] = new SelectList(_context.Plan, "Code", "Code", disciplineInfo.PlanCode);
-            ViewData["WorkPlanId"] = new SelectList(_context.Set<File>(), "Id", "BaseName", disciplineInfo.WorkPlanId);
+            ViewData["WorkPlanId"] = new SelectList(_context.Set<Models.File>(), "Id", "BaseName", disciplineInfo.WorkPlanId);
             return View(disciplineInfo);
         }
 
         // GET: DisciplineInfoes/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -174,6 +182,7 @@ namespace RPDControlSystem.Controllers
         }
 
         // POST: DisciplineInfoes/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -189,6 +198,7 @@ namespace RPDControlSystem.Controllers
             return _context.DisciplineInfo.Any(e => e.Id == id);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddDisciplineCompetence([Bind("DisciplineInfoId,CompetenceId")] DisciplineCompetence disciplineCompetence)
@@ -204,15 +214,12 @@ namespace RPDControlSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> UploadRPDFile(IFormFile uploadedFile)
         {
             if (uploadedFile != null)
             {
-                FileManager fm = new FileManager(_context, _appEnvironment);
-
-                File file = fm.SaveFile(uploadedFile);
-
                 int id = int.Parse(Request.Form["id"]);
 
                 var disciplineInfo = await _context.DisciplineInfo.Include(f => f.WorkPlan).SingleOrDefaultAsync(m => m.Id == id);
@@ -220,6 +227,16 @@ namespace RPDControlSystem.Controllers
                 {
                     return NotFound();
                 }
+
+                if (Path.GetExtension(uploadedFile.FileName).ToLower() != ".pdf")
+                {
+                    ModelState.AddModelError("WorkPlan", "Недопустимый формат (допускается .pdf)");
+                    return View(nameof(Edit), disciplineInfo);
+                }
+
+                FileManager fm = new FileManager(_context, _appEnvironment);
+
+                Models.File file = fm.SaveFile(uploadedFile);
 
                 if(disciplineInfo.WorkPlanExist)
                 {
@@ -230,7 +247,7 @@ namespace RPDControlSystem.Controllers
 
                 _context.SaveChanges();
 
-                return RedirectToAction(nameof(Edit), new { id });
+                return View(nameof(Edit), disciplineInfo);
             }
 
             return RedirectToAction("Index");

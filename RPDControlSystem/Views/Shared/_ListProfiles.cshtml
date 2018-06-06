@@ -1,0 +1,33 @@
+﻿@model IEnumerable<RPDControlSystem.Models.RPD.Profile>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Direction)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details" asp-controller="Profiles" asp-route-id="@item.Code">@Html.DisplayFor(modelItem => item.Code)</a>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-controller="Profiles" asp-route-id="@item.Code">@Html.DisplayFor(modelItem => item.Name)</a>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-controller="Directions" asp-route-id="@item.Direction.Code">@Html.DisplayFor(modelItem => item.Direction.Code)</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

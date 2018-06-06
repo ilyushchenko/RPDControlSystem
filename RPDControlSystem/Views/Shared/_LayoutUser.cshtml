@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Система контроля документов рабочих программ дисциплин (РПД)">
+    <meta name="author" content="Pavel Ilyushchenko">
+    <title>@ViewData["Title"] - RPDControlSystem</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/font-awesome.min.css">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/style.css">
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="~/css/font-awesome.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/style.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+    <!-- Left sitebar -->
+    <div class="flex-row">
+        <div class="sidebar">
+            <header class="site-header">
+                <h1>RPD</h1>
+            </header>
+            <nav class="left-nav">
+                @await Html.PartialAsync("_LoginPartial")
+            </nav>
+            <!-- Форма поиска -->
+            <form class="search-form" role="search" asp-action="FindAll" asp-controller="Search" method="get">
+                <div class="input-group">
+                    <button type="submit" class="fa fa-search fa-search-btn"></button>
+                    <input type="text" class="form-control" placeholder="Поиск" name="query" id="srch-term">
+                </div>
+            </form>
+            <div class="mobile-menu-icon">
+                <i class="fa fa-bars"></i>
+            </div>
+            <nav class="left-nav">
+                <ul>
+                    <li>
+                        <a asp-controller="Home" asp-action="Index" class="active">
+                            <i class="fa fa-home fa-fw"></i>Главная
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Report" asp-action="Index">
+                            <i class="fa fa-bullhorn fa-fw"></i>Отчет
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Directions" asp-action="Index">
+                            Направления подготовки
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Profiles" asp-action="Index">
+                            Профили подготовки
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Plans" asp-action="Index">
+                            Учебные планы
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- Content -->
+        <div class="content col-1 light-gray-bg">
+            <div class="content-container">
+                @RenderBody()
+                <footer class="text-right">
+                    <p>&copy; 2018 - RPDControlSystem - Pavel Ilyushchenko</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/jquery-migrate-1.2.1.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/js/jquery-migrate-1.2.1.min.js"></script>
+    </environment>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,105 @@
+﻿@model RPDControlSystem.ViewModels.FullSearchModel;
+@{
+    ViewData["Title"] = "FindAll";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="text-uppercase">Поиск</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form-inline" role="search" asp-action="FindAll" asp-controller="Search" method="get">
+                    <div class="input-group">
+                        <input type="search" class="form-control" placeholder="Поиск" name="query" id="srch-term">
+                    </div>
+                    <div class="input-group">
+                        <button type="submit" class="fa fa-search btn btn-primary">Найти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class=" col-md-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="text-uppercase">Поиск по учебным планам</h3>
+            </div>
+            <div class="panel-body">
+                @if (Model.Plans != null && Model.Plans.Count > 0)
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Код учебного плана</th>
+                                <th>Форма обучения</th>
+                                <th>Код профиля</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var plan in Model.Plans)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => plan.Code)</td>
+                                    <td>@Html.DisplayFor(modelItem => plan.EducationForm)</td>
+                                    <td>@Html.DisplayFor(modelItem => plan.ProfileCode)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>Учебных планов не найдено</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class=" col-md-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="text-uppercase">Поиск по специальностям</h3>
+            </div>
+            <div class="panel-body">
+                @if (Model.Profiles != null && Model.Profiles.Count > 0)
+                {
+                    Html.RenderPartial("_ListProfiles", Model.Profiles);
+                }
+                else
+                {
+                    <p>Учебных планов не найдено </p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class=" col-md-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="text-uppercase">Поиск по дисциплинам</h3>
+            </div>
+            <div class="panel-body">
+                @if (Model.Disciplines != null && Model.Disciplines.Count > 0)
+                {
+                    Html.RenderPartial("_ListDisciplineInfo", Model.Disciplines);
+                }
+                else
+                {
+                    <p>Дисциплин не найдено</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,27 @@
+@using Microsoft.AspNetCore.Identity
+@using RPDControlSystem.Models.RPD
+
+@inject SignInManager<TeacherProfile> SignInManager
+@inject UserManager<TeacherProfile> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <ul>
+        <li>
+            <a asp-area="" asp-controller="User" asp-action="Index" title="Manage">
+                <i class="fa fa-user fa-fw"></i>@UserManager.GetUserName(User)
+            </a>
+        </li>
+        <li>
+            <a asp-area="" asp-controller="Account" asp-action="Logout" title="Logout">
+                <i class="fa fa-sign-out fa-fw"></i>Выйти
+            </a>
+        </li>
+    </ul>
+}
+else
+{
+    <ul>
+        <li><a asp-area="" asp-controller="Account" asp-action="Login"><i class="fa fa-sign-in fa-fw"></i>Вход</a></li>
+    </ul>
+}
