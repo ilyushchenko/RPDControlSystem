@@ -1,0 +1,59 @@
+version: '3'
+
+# Создаем разделы, для хранения
+volumes:
+  rpd_storage:
+
+# Настраиваем сервисы
+services:
+  # Сервис базы данных
+  db:
+    # Образ бд
+    image: mysql/mysql-server:5.7
+    # Название контейнера
+    container_name: rpd.db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: "rpd"
+      MYSQL_USER: "pavel"
+      MYSQL_PASSWORD: "password"
+    volumes:
+      - rpd_storage:/var/lib/mysql
+    restart: always
+    networks:
+      - web_net
+
+  # Сервис WEB приложения
+  webapp:
+    container_name: rpd
+    image: rpdcontrolsystem:latest
+    build:
+      context: .
+      dockerfile: App.dockerfile
+    ports:
+      - "80:80"
+    links:
+      - db
+    # Устанавливаем переменые окружения
+    environment:
+      #ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_ENVIRONMENT: "Release"
+      DB_SERVER: "db"
+      DB_PORT: "3306"
+      DB_NAME: "rpd"
+      DB_USER: "pavel"
+      DB_PASSWORD: "password"
+    depends_on:
+      - db
+    # Контейнер будет перезапускаться при любом падении
+    # Например, если нет подключения к бд
+    restart: always
+    networks:
+      - web_net
+
+# Настройка сети
+networks:
+  web_net:
+    driver: bridge
