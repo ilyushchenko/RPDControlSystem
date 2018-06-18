@@ -9,6 +9,10 @@ using RPDControlSystem.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using RPDControlSystem.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using RPDControlSystem.ViewModels;
 
 namespace RPDControlSystem.Controllers
 {
@@ -19,15 +23,17 @@ namespace RPDControlSystem.Controllers
 
         private readonly DatabaseContext _context;
         private readonly UserManager<TeacherProfile> _userManager;
+        private readonly IHostingEnvironment _appEnvironment;
 
         #endregion
 
         #region Constructor
 
-        public UserController(DatabaseContext context, UserManager<TeacherProfile> userManager)
+        public UserController(DatabaseContext context, UserManager<TeacherProfile> userManager, IHostingEnvironment appEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _appEnvironment = appEnvironment;
         }
 
         #endregion
@@ -36,9 +42,7 @@ namespace RPDControlSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            string userName = User.Identity.Name;
-
-            TeacherProfile profile = await _userManager.FindByNameAsync(userName);
+            TeacherProfile profile = await GetCurrentuserAsync();
 
             if (profile == null)
             {
@@ -61,7 +65,7 @@ namespace RPDControlSystem.Controllers
 
             string userName = User.Identity.Name;
 
-            TeacherProfile profile = await _userManager.FindByNameAsync(userName);
+            TeacherProfile profile = await GetCurrentuserAsync();
 
             if (profile == null)
             {
@@ -118,6 +122,116 @@ namespace RPDControlSystem.Controllers
             return View(teacherProfile);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadProfilePhoto(IFormFile uploadedFile)
+        {
+            if (uploadedFile != null)
+            {
+                FileManager _fileManager = new FileManager(_context, _appEnvironment);
+
+                TeacherProfile profile = await GetCurrentuserAsync();
+
+                if (profile != null)
+                {
+                    if (profile.PhotoId != null)
+                    {
+                        _fileManager.DeleteFile(profile.Photo);
+                    }
+
+                    File photo = _fileManager.SaveFile(uploadedFile);
+
+                    profile.Photo = photo;
+                    _context.TeacherProfiles.Update(profile);
+                    _context.SaveChanges();
+
+                    return View(nameof(Edit), profile);
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword()
+        {
+            if (ModelState.IsValid)
+            {
+                TeacherProfile user = await GetCurrentuserAsync();
+                if (user != null)
+                {
+                    ChangePasswordViewModel changeViewModel = new ChangePasswordViewModel()
+                    {
+                        Id = user.Id
+                    };
+                    return View(changeViewModel);
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                TeacherProfile user = await _userManager.FindByIdAsync(model.Id);
+                if (user != null)
+                {
+                    IdentityResult result =
+                        await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Пользователь не найден");
+                }
+            }
+            return View(model);
+        }
+
+        public async Task<IActionResult> ChangeEmail(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                TeacherProfile user = await _userManager.FindByIdAsync(model.Id);
+                if (user != null)
+                {
+                    IdentityResult result =
+                        await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Пользователь не найден");
+                }
+            }
+            return View(model);
+        }
+
+        #endregion
+
+        #region Helpers
+
         private async Task<TeacherProfile> GetCurrentuserAsync()
         {
             string userName = User.Identity.Name;
@@ -129,12 +243,17 @@ namespace RPDControlSystem.Controllers
                 throw new Exception("Ошибка, при поиске пользователя");
             }
 
+            if (profile.PhotoId != null)
+            {
+                File photo = _context.Files.FirstOrDefault(f => f.Id == profile.PhotoId);
+                if (photo != null)
+                {
+                    profile.Photo = photo;
+                }
+            }
+
             return profile;
         }
-
-        #endregion
-
-        #region Helpers
 
         private bool TeacherProfileExists(string id)
         {
