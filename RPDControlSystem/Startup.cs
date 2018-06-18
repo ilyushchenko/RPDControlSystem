@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RPDControlSystem.Models.RPD;
 using RPDControlSystem.Storage;
 
@@ -25,11 +26,20 @@ namespace RPDControlSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = Configuration.GetConnectionString("MySqlDb");
+            string server = Configuration["DB_SERVER"] ?? "localhost";
+            string port = Configuration["DB_PORT"] ?? "3306";
+            string database = Configuration["DB_NAME"] ?? "rpd";
+            string user = Configuration["DB_USER"] ?? "dev_user";
+            string password = Configuration["DB_PASSWORD"] ?? "dev_password";
+
+            var connectionString = $"server={server};port={port};database={database};uid={user};password={password};";
+
+            Console.WriteLine(connectionString);
 
             services.AddDbContext<DatabaseContext>(options => options.UseMySql(connectionString));
 
-            services.AddIdentity<TeacherProfile, IdentityRole>(opt => {
+            services.AddIdentity<TeacherProfile, IdentityRole>(opt =>
+            {
                 // Задание минимальной длинны пароля
                 opt.Password.RequiredLength = 6;
                 // Требование символов
@@ -49,7 +59,7 @@ namespace RPDControlSystem
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

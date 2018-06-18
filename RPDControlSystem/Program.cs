@@ -11,6 +11,10 @@ using Microsoft.Extensions.Logging;
 using RPDControlSystem.Storage;
 using RPDControlSystem.Models.RPD;
 using Microsoft.AspNetCore.Identity;
+using System.Threading;
+using MySql.Data.MySqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace RPDControlSystem
 {
@@ -20,25 +24,36 @@ namespace RPDControlSystem
         {
             var host = BuildWebHost(args);
 
+            bool isConnected = false;
+
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+
+                var context = services.GetRequiredService<DatabaseContext>();
+                var userManager = services.GetRequiredService<UserManager<TeacherProfile>>();
+                var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var logger = services.GetRequiredService<ILogger<Program>>();
+
                 try
                 {
-                    var userManager = services.GetRequiredService<UserManager<TeacherProfile>>();
-                    var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    context.Database.Migrate();
 
                     Task roleInit = Initializer.InitializeRoleAsync(userManager, rolesManager);
                     roleInit.Wait();
+                    isConnected = true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Ошибка подключения к базе данных.");
+                    logger.LogError($"Unable to connect to database!");
+                }
+
+                if (isConnected)
+                {
+                    logger.LogInformation($"Succesfully connectet to database");
+                    host.Run();
                 }
             }
-
-            host.Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
