@@ -38,10 +38,8 @@ namespace RPDControlSystem.Storage
                 {
                     result = await userManager.CreateAsync(admin, password);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-
-                    throw;
                 }
                 finally
                 {
@@ -51,9 +49,9 @@ namespace RPDControlSystem.Storage
                         await userManager.AddToRoleAsync(admin, "admin");
                     }
                 }
-                
 
-                
+
+
             }
         }
     }
