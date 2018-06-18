@@ -9,16 +9,16 @@
                 @Html.DisplayNameFor(model => model.DisciplineType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Discipline)
+                @Html.DisplayNameFor(model => model.DisciplineCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Plan)
+                @Html.DisplayNameFor(model => model.PlanCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TeacherProfile)
+                @Html.DisplayNameFor(model => model.TeacherProfileId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.WorkPlan)
+                @Html.DisplayNameFor(model => model.WorkPlanId)
             </th>
         </tr>
     </thead>
@@ -27,19 +27,26 @@
         {
             <tr>
                 <td>
-                    <a asp-action="Details" asp-controller="Disciplines" asp-route-id="@item.DisciplineCode">@Html.DisplayFor(modelItem => item.FullCode)</a>
+                    <a asp-action="Details" asp-controller="DisciplineInfoes" asp-route-id="@item.DisciplineCode">@Html.DisplayFor(modelItem => item.FullCode)</a>
                 </td>
                 <td>
-                    @item.DisciplineType
+                    @if (item.DisciplineType == DisciplineType.Additional)
+                    {
+                        <span>По-выбору</span>
+                    }
+                    @if (item.DisciplineType == DisciplineType.Base)
+                    {
+                        <span>Базовая</span>
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Discipline.Code)
+                    @Html.DisplayFor(modelItem => item.DisciplineCode)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Plan.Code)
+                    <a asp-action="Details" asp-controller="Plans" asp-route-id="@item.PlanCode">@Html.DisplayFor(modelItem => item.PlanCode)</a>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TeacherProfile.Id)
+                    @Html.DisplayFor(modelItem => item.TeacherProfileId)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.WorkPlan.BaseName)

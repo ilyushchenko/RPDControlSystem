@@ -26,8 +26,8 @@ namespace RPDControlSystem.Controllers
 
         public IActionResult FindCompetenceExceeding()
         {
-            var competence = _context.DisciplineInfo.Where(discipline => discipline.Competencies.Count > 3).ToList();
-            return View();
+            var competence = _context.DisciplineInfo.Include(d => d.Discipline).Where(discipline => discipline.Competencies.Count > 3).ToList();
+            return View(competence);
         }
 
         public IActionResult FindPlanWithoutCompetence()
@@ -49,7 +49,7 @@ namespace RPDControlSystem.Controllers
                     fgosCompetence = fgosCompetence.Except(disciplineCompetence).ToList();
                 }
 
-                if(fgosCompetence.Count > 0)
+                if (fgosCompetence.Count > 0)
                 {
                     reportedItems.Add(new PlanCompetenceListViewModel
                     {
@@ -66,7 +66,7 @@ namespace RPDControlSystem.Controllers
             var teachersToReport = new List<TeacherProfile>();
             var teachers = _context.TeacherProfiles.Include(td => td.Disciplines).ThenInclude(d => d.Discipline).ToList();
 
-            teachers.Sort((x,y) => x.FullName.CompareTo(y.FullName));
+            teachers.Sort((x, y) => x.FullName.CompareTo(y.FullName));
 
             foreach (var teacher in teachers)
             {
