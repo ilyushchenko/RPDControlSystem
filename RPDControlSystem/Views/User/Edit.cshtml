@@ -73,7 +73,7 @@
                     </div>
                     <div class="panel-body">
                         @{
-                            string photoPath = Model?.Photo?.FullPath ?? "/Files/DefaultPhoto.jpg";
+                            string photoPath = Model?.Photo?.FullPath ?? "/images/DefaultPhoto.jpg";
                             string photoAlt = $"{Model.FullName}";
                         }
                         <img src='@photoPath' alt="@photoAlt" class="img-responsive img-thumbnail img-profile" id="profilePhoto" />
