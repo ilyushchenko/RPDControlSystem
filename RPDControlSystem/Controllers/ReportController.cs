@@ -100,6 +100,7 @@ namespace RPDControlSystem.Controllers
                 .Include(p => p.Plan)
                     .ThenInclude(pr => pr.Profile)
                         .ThenInclude(d => d.Direction)
+                .Include(t => t.TeacherProfile)
                 .Where(wp => wp.WorkPlanExist).ToList();
             switch (type)
             {

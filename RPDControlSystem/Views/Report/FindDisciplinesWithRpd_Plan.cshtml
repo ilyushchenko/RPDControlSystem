@@ -41,12 +41,12 @@
                         </td>
                         <td>
                             <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Discipline.Name)</a>
-</td>
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Plan.Code)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.TeacherProfile.Id)
+                            @Html.DisplayFor(modelItem => item.TeacherProfile.FullName)
                         </td>
                         <td>
                             <a href="@item.WorkPlan.FullPath" target="_blank">@Html.DisplayFor(modelItem => item.WorkPlan.BaseName)</a>

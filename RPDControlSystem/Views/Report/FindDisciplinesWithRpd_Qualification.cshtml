@@ -44,21 +44,51 @@
                                 count = 0;
                             }
                             isFirst = false;
-                            <tr class="main"><td colspan="5"><h4>Квалификация: @lastQualification</h4></td></tr>
+                            <tr class="main">
+                                <td colspan="5">
+                                    <h4>
+                                        Квалификация:
+                                        @switch (lastQualification)
+                                        {
+                                            case Qualification.Bachelor:
+                                                <span>Бакалавр</span>
+                                                break;
+                                            case Qualification.Masetr:
+                                                <span>Магистр</span>
+                                                break;
+                                            case Qualification.Specialist:
+                                                <span>Специалист</span>
+                                                break;
+                                            default:
+                                                <span>@lastQualification</span>
+                                                break;
+                                        }
+                                    </h4>
+                                </td>
+                            </tr>
                         }
                         count++;
                         <tr>
                             <td>
                                 <a asp-action="Details" asp-controller="DisciplineInfoes" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Discipline.Name)</a>
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DisciplineType)
-                            </td>
+                            @switch (item.DisciplineType)
+                            {
+                                case DisciplineType.Base:
+                                    <td>Базовая</td>
+                                    break;
+                                case DisciplineType.Additional:
+                                    <td>По выбору</td>
+                                    break;
+                                default:
+                                    <td>Html.DisplayFor(modelItem => item.DisciplineType)</td>
+                                    break;
+                            }
                             <td>
                                 <a asp-action="Details" asp-controller="Plans" asp-route-id="@item.PlanCode">@Html.DisplayFor(modelItem => item.Plan.Code)</a>
-</td>
+                            </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.TeacherProfile.Id)
+                                @Html.DisplayFor(modelItem => item.TeacherProfile.FullName)
                             </td>
                             <td>
                                 <a target="_blank" href="@item.WorkPlan.FullPath">@item.WorkPlan.BaseName</a>
